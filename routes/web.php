@@ -26,6 +26,8 @@ Route::middleware('auth')->group(function () {
 
 // User Routes
 Route::middleware(['auth', 'verified.email'])->name('user.')->group(function () {
+    Route::post('/comments', [\App\Http\Controllers\CommentController::class, 'store'])->name('comments.store');
+    Route::delete('/comments/{comment}', [\App\Http\Controllers\CommentController::class, 'destroy'])->name('comments.destroy');
     Route::resource('posts', \App\Http\Controllers\User\PostController::class);
 });
 
@@ -47,3 +49,5 @@ Route::middleware(['auth', 'verified.email', 'admin'])->prefix('admin')->name('a
 });
 
 require __DIR__.'/auth.php';
+Route::post('/comments', [\App\Http\Controllers\CommentController::class, 'store'])->name('comments.store');
+Route::delete('/comments/{comment}', [\App\Http\Controllers\CommentController::class, 'destroy'])->name('comments.destroy');

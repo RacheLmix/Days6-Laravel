@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Notifications\Admin\NewUserRegistered;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -42,6 +43,12 @@ class RegisteredUserController extends Controller
         ]);
 
         event(new Registered($user));
+        
+        // Notify admin users about new registration
+        $adminUsers = User::where('is_admin', true)->orWhere('admin', 'admin')->get();
+        foreach ($adminUsers as $admin) {
+            $admin->notify(new NewUserRegistered($user));
+        }
 
         Auth::login($user);
 
